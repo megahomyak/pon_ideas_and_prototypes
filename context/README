@@ -1,0 +1,10 @@
+A "context" should be the _only_ entry point for _any_ external resource of a library. For example, if the library wants to request some other library, it should do that through the context. Of course, in the modern (stupid) age we have shared resources such as the file system usable by default, which makes this isolation be not as good as I would want to, but restricting it for in-language-executor actions would be a good thing to do already, I think.
+
+There should only be a *getter* for the context, because a setter (and other related things) can be retrieved through the getter.
+
+An example of this thing:
+LIBRARY (through context): I want to get LIB1!
+RUNTIME: Context getter handler, give me LIB1
+CONTEXT GETTER HANDLER (modified by the user): Recieved a request for LIB1, instructed to return LIB2 instead (because of name collisions with other dependencies in the project, the right library is named LIB2 instead of LIB1 in the files)
+RUNTIME: Passing the received library back to the requester library
+LIBRARY: Got LIB1 [in fact that is called LIB2 in the files, but this library has no idea]
